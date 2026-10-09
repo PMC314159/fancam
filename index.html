@@ -30,8 +30,9 @@ button{
   color:inherit;
 }
 button:hover{background:#3a3041}
+button:disabled{opacity:.55;cursor:wait}
 button:focus-visible,input:focus-visible,select:focus-visible,
-textarea:focus-visible,a:focus-visible{
+textarea:focus-visible,a:focus-visible,summary:focus-visible{
   outline:2px solid #f6a1cc;
   outline-offset:3px;
 }
@@ -60,11 +61,7 @@ header p{margin:0;color:var(--muted)}
   border-radius:30px;
   white-space:nowrap;
 }
-main{
-  max-width:1550px;
-  margin:auto;
-  padding:0 28px 40px;
-}
+main{max-width:1550px;margin:auto;padding:0 28px 40px}
 .editor-grid{
   display:grid;
   grid-template-columns:minmax(0,1fr) 340px;
@@ -83,6 +80,7 @@ main{
 .stage-top{
   display:flex;
   justify-content:space-between;
+  gap:12px;
   margin-bottom:14px;
   color:var(--muted);
   font-size:11px;
@@ -106,12 +104,7 @@ canvas:active{cursor:grabbing}
   padding-top:8px;
   margin-top:12px;
 }
-.actions{
-  display:flex;
-  gap:10px;
-  margin-top:16px;
-  flex-wrap:wrap;
-}
+.actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
 .primary{
   background:#ee91be;
   color:#271320;
@@ -127,33 +120,51 @@ canvas:active{cursor:grabbing}
   font-size:12px;
   margin-top:10px;
 }
-.note{
-  color:#8d8498;
-  font-size:11px;
-  margin-top:18px;
-  line-height:1.8;
-}
-aside{display:grid;gap:12px}
+.note{color:#8d8498;font-size:11px;margin-top:18px;line-height:1.8}
+aside{display:grid;gap:12px;align-content:start}
 .panel{
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:14px;
-  padding:18px;
+  min-width:0;
 }
-h2{
-  font-size:14px;
-  margin:0 0 14px;
+.panel>summary{
   display:flex;
-  gap:10px;
   align-items:center;
+  gap:10px;
+  padding:17px 18px;
+  list-style:none;
+  cursor:pointer;
+  user-select:none;
+  font-size:14px;
+  font-weight:700;
+  border-radius:13px;
 }
+.panel>summary::-webkit-details-marker{display:none}
+.panel>summary::marker{content:""}
+.panel>summary:hover{background:#ffffff05}
+.section-number{color:var(--accent);font-size:10px;letter-spacing:1px}
+.panel>summary::after{
+  content:"";
+  width:8px;
+  height:8px;
+  margin-left:auto;
+  margin-right:3px;
+  border-right:1.5px solid var(--muted);
+  border-bottom:1.5px solid var(--muted);
+  transform:rotate(45deg);
+  flex-shrink:0;
+}
+.panel[open]>summary::after{transform:rotate(225deg)}
+.panel[open]>summary{
+  border-bottom:1px solid #ffffff09;
+  border-radius:13px 13px 0 0;
+}
+.panel-body{padding:4px 18px 18px}
+.category-actions{display:flex;justify-content:flex-end;gap:7px}
+h2{font-size:14px;margin:0 0 14px;display:flex;gap:10px;align-items:center}
 h2 span{color:var(--accent);font-size:10px;letter-spacing:1px}
-label{
-  display:block;
-  font-size:12px;
-  color:#c4bccc;
-  margin:12px 0 5px;
-}
+label{display:block;font-size:12px;color:#c4bccc;margin:12px 0 5px}
 input[type=text],select,textarea{
   width:100%;
   background:#131117;
@@ -225,6 +236,17 @@ input[type=checkbox]{accent-color:var(--accent)}
 .control-label{display:flex;justify-content:space-between;gap:10px}
 .control-label output{color:#e5b1d0;white-space:nowrap}
 .hidden{display:none!important}
+.control-group{
+  padding:0 12px 12px;
+  margin-top:14px;
+  background:#151219;
+  border:1px solid #38303f;
+  border-radius:10px;
+}
+.control-group-title{margin:12px 0 7px;font-size:12px;font-weight:700;color:#f2c4dd}
+.control-group .small{margin:8px 0}
+.control-group .compact{margin-top:6px}
+.divider{border:0;border-top:1px solid #ffffff10;margin:18px 0}
 dialog{
   width:min(850px,94vw);
   max-height:92vh;
@@ -258,10 +280,7 @@ dialog h2{font-size:17px}
 .usage-notice strong{color:#f7c5df}
 @media(max-width:1000px){
   main{padding:0 18px 30px}
-  .editor-grid{
-    grid-template-columns:minmax(0,1fr) 300px;
-    gap:16px;
-  }
+  .editor-grid{grid-template-columns:minmax(0,1fr) 300px;gap:16px}
   header{padding:22px 18px}
 }
 @media(max-width:760px){
@@ -300,11 +319,9 @@ dialog h2{font-size:17px}
           <span>이미지를 드래그해 구도를 맞춰보세요</span>
         </div>
         <canvas id="canvas" width="1280" height="720" aria-label="직캠 썸네일 미리보기"></canvas>
-        <p class="hint">사진 위를 드래그하면 위치가 바뀌어요. 페어형은 옮길 사진을 직접 잡아주세요.</p>
+        <p class="hint">사진 위를 드래그하면 위치가 바뀌어요. 카메라 라벨은 ‘썸네일 문구’의 위치 슬라이더로 옮길 수 있어요.</p>
       </div>
-
       <div id="status" role="status" aria-live="polite">이미지를 올리고 나만의 썸네일을 만들어보세요.</div>
-
       <p class="note">
         사진은 서버에 업로드되지 않고 이 브라우저에서만 처리됩니다. 새로고침 전 완성 이미지를 저장해주세요.<br>
         아이폰에서 다운로드가 잘 안 되면 ‘이미지 열기 / 공유’를 누른 뒤 이미지를 길게 눌러 저장하세요. PC 편집을 추천합니다.<br>
@@ -313,190 +330,214 @@ dialog h2{font-size:17px}
     </section>
 
     <aside>
-      <div class="panel">
-        <h2><span>01</span>사진과 레이아웃</h2>
+      <div class="category-actions">
+        <button id="expandAll" class="compact" type="button">모두 펼치기</button>
+        <button id="collapseAll" class="compact" type="button">모두 접기</button>
+      </div>
 
-        <label for="layout">레이아웃</label>
-        <select id="layout">
-          <option value="single">한 장 직캠 · 1인 / 한 장 속 두 사람</option>
-          <option value="pair">페어 직캠 · 사진 두 장</option>
-        </select>
-
-        <label class="upload">
-          ＋ 첫 번째 이미지 업로드
-          <input id="file0" type="file" accept="image/*">
-        </label>
-        <p id="photoStatus0" class="small" role="status">아직 선택한 사진이 없어요.</p>
-
-        <label class="upload hidden" id="uploadSecond">
-          ＋ 두 번째 이미지 업로드
-          <input id="file1" type="file" accept="image/*">
-        </label>
-        <p id="photoStatus1" class="small hidden" role="status">아직 선택한 사진이 없어요.</p>
-
-        <div id="editPhotoRow" class="hidden">
-          <label for="editPhoto">조정할 사진</label>
-          <select id="editPhoto">
-            <option value="0">첫 번째 사진 · 왼쪽</option>
-            <option value="1">두 번째 사진 · 오른쪽</option>
+      <details class="panel" open>
+        <summary><span class="section-number">01</span>사진과 레이아웃</summary>
+        <div class="panel-body">
+          <label for="layout">레이아웃</label>
+          <select id="layout">
+            <option value="single">한 장 직캠 · 1인 / 한 장 속 두 사람</option>
+            <option value="pair">페어 직캠 · 사진 두 장</option>
           </select>
-        </div>
 
-        <label class="control-label" for="zoom">확대 / 축소 <output id="zoomOut"></output></label>
-        <input id="zoom" type="range" min="0.3" max="3" step="0.01" value="1">
-
-        <label class="control-label" for="panX">좌우 이동 <output id="panXOut"></output></label>
-        <input id="panX" type="range" min="-100" max="100" value="0">
-
-        <label class="control-label" for="panY">상하 이동 <output id="panYOut"></output></label>
-        <input id="panY" type="range" min="-100" max="100" value="0">
-
-        <div class="row">
-          <button id="resetPhoto" class="compact">구도 초기화</button>
-          <button id="flip" class="compact">좌우 반전</button>
-          <button id="removePhoto" class="compact">사진 지우기</button>
-        </div>
-
-        <label for="shade">글자 뒤 어둡기</label>
-        <input id="shade" type="range" min="0" max="0.85" step="0.01" value="0.28">
-      </div>
-
-      <div class="panel">
-        <h2><span>02</span>썸네일 문구</h2>
-
-        <label for="labelText">카메라 라벨</label>
-        <input id="labelText" type="text" value="입덕직캠" maxlength="18">
-
-        <label for="group">그룹 / 페어명</label>
-        <input id="group" type="text" value="YOUR FAVORITE" maxlength="50">
-
-        <label class="control-label" for="groupScale">
-          그룹 / 페어명 글자 크기
-          <output id="groupScaleOut" for="groupScale">100%</output>
-        </label>
-        <input id="groupScale" type="range" min="0.2" max="2" step="0.01" value="1">
-
-        <label for="name">이름 / 메인 문구</label>
-        <input id="name" type="text" value="최애 이름" maxlength="40">
-
-        <label class="control-label" for="nameScale">
-          이름 / 메인 문구 글자 크기
-          <output id="nameScaleOut" for="nameScale">100%</output>
-        </label>
-        <input id="nameScale" type="range" min="0.2" max="2" step="0.01" value="1">
-
-        <div id="secondText" class="hidden">
-          <label for="group2">오른쪽 그룹 / 페어명</label>
-          <input id="group2" type="text" value="MY ONE &amp; ONLY" maxlength="50">
-
-          <label class="control-label" for="groupScale2">
-            오른쪽 그룹 / 페어명 글자 크기
-            <output id="groupScale2Out" for="groupScale2">100%</output>
+          <label class="upload">
+            ＋ 첫 번째 이미지 업로드
+            <input id="file0" type="file" accept="image/*">
           </label>
-          <input id="groupScale2" type="range" min="0.2" max="2" step="0.01" value="1">
+          <p id="photoStatus0" class="small" role="status">아직 선택한 사진이 없어요.</p>
 
-          <label for="name2">오른쪽 이름</label>
-          <input id="name2" type="text" value="너의 이름" maxlength="40">
-
-          <label class="control-label" for="nameScale2">
-            오른쪽 이름 글자 크기
-            <output id="nameScale2Out" for="nameScale2">100%</output>
+          <label class="upload hidden" id="uploadSecond">
+            ＋ 두 번째 이미지 업로드
+            <input id="file1" type="file" accept="image/*">
           </label>
-          <input id="nameScale2" type="range" min="0.2" max="2" step="0.01" value="1">
+          <p id="photoStatus1" class="small hidden" role="status">아직 선택한 사진이 없어요.</p>
+
+          <div id="editPhotoRow" class="hidden">
+            <label for="editPhoto">조정할 사진</label>
+            <select id="editPhoto">
+              <option value="0">첫 번째 사진 · 왼쪽</option>
+              <option value="1">두 번째 사진 · 오른쪽</option>
+            </select>
+          </div>
+
+          <label class="control-label" for="zoom">확대 / 축소 <output id="zoomOut"></output></label>
+          <input id="zoom" type="range" min="0.3" max="3" step="0.01" value="1">
+
+          <label class="control-label" for="panX">좌우 이동 <output id="panXOut"></output></label>
+          <input id="panX" type="range" min="-100" max="100" value="0">
+
+          <label class="control-label" for="panY">상하 이동 <output id="panYOut"></output></label>
+          <input id="panY" type="range" min="-100" max="100" value="0">
+
+          <div class="row">
+            <button id="resetPhoto" class="compact" type="button">구도 초기화</button>
+            <button id="flip" class="compact" type="button">좌우 반전</button>
+            <button id="removePhoto" class="compact" type="button">사진 지우기</button>
+          </div>
+
+          <label for="shade">글자 뒤 어둡기</label>
+          <input id="shade" type="range" min="0" max="0.85" step="0.01" value="0.28">
         </div>
+      </details>
 
-        <p class="small">그룹명과 이름 크기를 각각 조절할 수 있어요. 긴 문구는 사진 영역 너비에 맞게 자동으로 줄어듭니다.</p>
+      <details class="panel" open>
+        <summary><span class="section-number">02</span>썸네일 문구</summary>
+        <div class="panel-body">
+          <label for="labelText">카메라 라벨</label>
+          <input id="labelText" type="text" value="입덕직캠" maxlength="18">
 
-        <label for="textSide">문구 배치</label>
-        <select id="textSide">
-          <option value="left">왼쪽 아래 / 페어형은 각 사진 왼쪽</option>
-          <option value="right">오른쪽 아래 / 페어형은 각 사진 오른쪽</option>
-        </select>
+          <div class="control-group">
+            <p class="control-group-title">카메라 라벨 위치 · 기본 / 왼쪽 사진</p>
+            <label class="control-label" for="labelX">
+              좌우 이동 <output id="labelXOut" for="labelX">0</output>
+            </label>
+            <input id="labelX" type="range" min="-1280" max="1280" step="1" value="0">
 
-        <label class="control-label" for="textScale">
-          문구 전체 크기
-          <output id="textScaleOut" for="textScale">100%</output>
-        </label>
-        <input id="textScale" type="range" min="0.55" max="1.2" step="0.01" value="1">
+            <label class="control-label" for="labelY">
+              상하 이동 <output id="labelYOut" for="labelY">0</output>
+            </label>
+            <input id="labelY" type="range" min="-720" max="720" step="1" value="0">
 
-        <label for="textY">문구 높이</label>
-        <input id="textY" type="range" min="0" max="210" value="0">
+            <p class="small">좌우: − 왼쪽 / ＋ 오른쪽<br>상하: − 위쪽 / ＋ 아래쪽</p>
+            <button id="resetLabel" class="compact" type="button">카메라 위치 초기화</button>
+          </div>
 
-        <label for="font">글꼴</label>
-        <select id="font">
-          <option value="sans">고딕 · 두껍고 또렷하게</option>
-          <option value="serif">명조 · 부드럽고 차분하게</option>
-        </select>
+          <label for="group">그룹 / 페어명</label>
+          <input id="group" type="text" value="YOUR FAVORITE" maxlength="50">
+          <label class="control-label" for="groupScale">
+            그룹 / 페어명 글자 크기 <output id="groupScaleOut" for="groupScale">100%</output>
+          </label>
+          <input id="groupScale" type="range" min="0.2" max="2" step="0.01" value="1">
 
-        <label class="check"><input id="underline" type="checkbox" checked> 그룹명 밑줄</label>
-        <label class="check"><input id="shadow" type="checkbox" checked> 글자 그림자</label>
-      </div>
+          <label for="name">이름 / 메인 문구</label>
+          <input id="name" type="text" value="최애 이름" maxlength="40">
+          <label class="control-label" for="nameScale">
+            이름 / 메인 문구 글자 크기 <output id="nameScaleOut" for="nameScale">100%</output>
+          </label>
+          <input id="nameScale" type="range" min="0.2" max="2" step="0.01" value="1">
 
-      <div class="panel">
-        <h2><span>03</span>틀과 컬러</h2>
+          <div id="secondText" class="hidden">
+            <hr class="divider">
+            <label for="group2">오른쪽 그룹 / 페어명</label>
+            <input id="group2" type="text" value="MY ONE &amp; ONLY" maxlength="50">
+            <label class="control-label" for="groupScale2">
+              오른쪽 그룹 / 페어명 글자 크기 <output id="groupScale2Out" for="groupScale2">100%</output>
+            </label>
+            <input id="groupScale2" type="range" min="0.2" max="2" step="0.01" value="1">
 
-        <div class="presets" aria-label="컬러 프리셋">
-          <button class="swatch" style="--sw:#e50083" data-preset="pink" aria-label="핑크 프리셋"></button>
-          <button class="swatch" style="--sw:#7657dd" data-preset="purple" aria-label="보라 프리셋"></button>
-          <button class="swatch" style="--sw:#178be4" data-preset="blue" aria-label="파랑 프리셋"></button>
-          <button class="swatch" style="--sw:#218573" data-preset="mint" aria-label="민트 프리셋"></button>
-          <button class="swatch" style="--sw:#26232e" data-preset="mono" aria-label="모노 프리셋"></button>
+            <label for="name2">오른쪽 이름</label>
+            <input id="name2" type="text" value="너의 이름" maxlength="40">
+            <label class="control-label" for="nameScale2">
+              오른쪽 이름 글자 크기 <output id="nameScale2Out" for="nameScale2">100%</output>
+            </label>
+            <input id="nameScale2" type="range" min="0.2" max="2" step="0.01" value="1">
+
+            <div class="control-group">
+              <p class="control-group-title">카메라 라벨 위치 · 오른쪽 사진</p>
+              <label class="control-label" for="labelX2">
+                좌우 이동 <output id="labelX2Out" for="labelX2">0</output>
+              </label>
+              <input id="labelX2" type="range" min="-1280" max="1280" step="1" value="0">
+
+              <label class="control-label" for="labelY2">
+                상하 이동 <output id="labelY2Out" for="labelY2">0</output>
+              </label>
+              <input id="labelY2" type="range" min="-720" max="720" step="1" value="0">
+
+              <p class="small">좌우: − 왼쪽 / ＋ 오른쪽<br>상하: − 위쪽 / ＋ 아래쪽</p>
+              <button id="resetLabel2" class="compact" type="button">오른쪽 카메라 위치 초기화</button>
+            </div>
+          </div>
+
+          <p class="small">그룹명과 이름 크기를 각각 조절할 수 있어요. 긴 문구는 사진 영역 너비에 맞게 자동으로 줄어듭니다.</p>
+          <hr class="divider">
+
+          <label for="textSide">문구 배치</label>
+          <select id="textSide">
+            <option value="left">왼쪽 아래 / 페어형은 각 사진 왼쪽</option>
+            <option value="right">오른쪽 아래 / 페어형은 각 사진 오른쪽</option>
+          </select>
+
+          <label class="control-label" for="textScale">
+            문구 전체 크기 <output id="textScaleOut" for="textScale">100%</output>
+          </label>
+          <input id="textScale" type="range" min="0.55" max="1.2" step="0.01" value="1">
+
+          <label for="textY">문구 높이</label>
+          <input id="textY" type="range" min="0" max="210" value="0">
+
+          <label for="font">글꼴</label>
+          <select id="font">
+            <option value="sans">고딕 · 두껍고 또렷하게</option>
+            <option value="serif">명조 · 부드럽고 차분하게</option>
+          </select>
+          <label class="check"><input id="underline" type="checkbox" checked> 그룹명 밑줄</label>
+          <label class="check"><input id="shadow" type="checkbox" checked> 글자 그림자</label>
         </div>
+      </details>
 
-        <div id="colors"></div>
+      <details class="panel" open>
+        <summary><span class="section-number">03</span>틀과 컬러</summary>
+        <div class="panel-body">
+          <div class="presets" aria-label="컬러 프리셋">
+            <button class="swatch" style="--sw:#e50083" data-preset="pink" aria-label="핑크 프리셋"></button>
+            <button class="swatch" style="--sw:#7657dd" data-preset="purple" aria-label="보라 프리셋"></button>
+            <button class="swatch" style="--sw:#178be4" data-preset="blue" aria-label="파랑 프리셋"></button>
+            <button class="swatch" style="--sw:#218573" data-preset="mint" aria-label="민트 프리셋"></button>
+            <button class="swatch" style="--sw:#26232e" data-preset="mono" aria-label="모노 프리셋"></button>
+          </div>
+          <div id="colors"></div>
 
-        <label for="barHeight">상단 바 두께</label>
-        <input id="barHeight" type="range" min="0" max="60" value="25">
+          <label for="barHeight">상단 바 두께</label>
+          <input id="barHeight" type="range" min="0" max="60" value="25">
+          <label class="check"><input id="fullFrame" type="checkbox"> 네 면에 프레임 두르기</label>
+          <label class="check"><input id="showBadge" type="checkbox" checked> 오른쪽 위 배지 표시</label>
 
-        <label class="check"><input id="fullFrame" type="checkbox"> 네 면에 프레임 두르기</label>
-        <label class="check"><input id="showBadge" type="checkbox" checked> 오른쪽 위 배지 표시</label>
-
-        <label for="badgeText">배지 문구</label>
-        <textarea id="badgeText" rows="3" style="resize:vertical" placeholder="원하는 문구를 입력하세요">F
+          <label for="badgeText">배지 문구</label>
+          <textarea id="badgeText" rows="3" style="resize:vertical" placeholder="원하는 문구를 입력하세요">F
 CAM</textarea>
-        <p class="small">엔터를 누르면 줄이 바뀝니다.</p>
+          <p class="small">엔터를 누르면 줄이 바뀝니다.</p>
 
-        <label for="badgeAlign">배지 문구 정렬</label>
-        <select id="badgeAlign">
-          <option value="left">왼쪽 정렬</option>
-          <option value="center" selected>가운데 정렬</option>
-          <option value="right">오른쪽 정렬</option>
-        </select>
-
-        <label class="check"><input id="badgeItalic" type="checkbox"> 배지 문구 기울임체</label>
-
-        <p class="small">색상 칩 또는 HEX 코드로 원하는 색을 지정하세요. 긴 문구는 영역에 맞게 자동으로 작아집니다.</p>
-      </div>
-
-      <div class="panel">
-        <h2><span>04</span>커미션주 표기</h2>
-
-        <label for="creditText">오른쪽 아래 작은 문구</label>
-        <input id="creditText" type="text" value="" placeholder="예: Commission · @아이디">
-        <p class="small">입력하면 오른쪽 아래에 표시됩니다. 비워두면 표시되지 않아요.</p>
-
-        <label for="creditSize">글자 크기</label>
-        <input id="creditSize" type="range" min="12" max="36" value="20">
-
-        <div class="colorrow">
-          <label for="creditColor">글자 색</label>
-          <input id="creditColor" type="color" value="#ffffff">
+          <label for="badgeAlign">배지 문구 정렬</label>
+          <select id="badgeAlign">
+            <option value="left">왼쪽 정렬</option>
+            <option value="center" selected>가운데 정렬</option>
+            <option value="right">오른쪽 정렬</option>
+          </select>
+          <label class="check"><input id="badgeItalic" type="checkbox"> 배지 문구 기울임체</label>
+          <p class="small">색상 칩 또는 HEX 코드로 원하는 색을 지정하세요. 긴 문구는 영역에 맞게 자동으로 작아집니다.</p>
         </div>
-      </div>
+      </details>
+
+      <details class="panel" open>
+        <summary><span class="section-number">04</span>커미션주 표기</summary>
+        <div class="panel-body">
+          <label for="creditText">오른쪽 아래 작은 문구</label>
+          <input id="creditText" type="text" value="" placeholder="예: Commission · @아이디">
+          <p class="small">입력하면 오른쪽 아래에 표시됩니다. 비워두면 표시되지 않아요.</p>
+          <label for="creditSize">글자 크기</label>
+          <input id="creditSize" type="range" min="12" max="36" value="20">
+          <div class="colorrow">
+            <label for="creditColor">글자 색</label>
+            <input id="creditColor" type="color" value="#ffffff">
+          </div>
+        </div>
+      </details>
     </aside>
   </div>
 
   <section class="save-section" aria-label="완성 이미지 저장">
     <div class="usage-notice" aria-labelledby="usageNoticeTitle">
       <h2 id="usageNoticeTitle">이용 시 주의사항 <span lang="en">PLEASE READ</span></h2>
-
       <p>완성된 이미지를 공유할 때에는 <strong>이 사이트 또는 이 사이트를 공유한 원 게시글(트위터/X)의 링크</strong>를 출처로 밝혀주세요.</p>
       <p lang="en">When sharing an image created with this site, please credit the source by including a link to this site or to the original Twitter/X post that shared it.</p>
-
       <p><strong>『귀멸의 칼날』 및 『나의 히어로 아카데미아』 장르의 콘텐츠 제작에 본 사이트를 사용하는 것을 금지합니다.</strong></p>
       <p lang="en">Use of this site to create content related to <strong>Demon Slayer: Kimetsu no Yaiba</strong> or <strong>My Hero Academia</strong> is prohibited.</p>
     </div>
-
     <div class="actions">
       <select id="resolution" aria-label="저장 해상도">
         <option value="1">1280 × 720</option>
@@ -524,7 +565,7 @@ CAM</textarea>
 </dialog>
 
 <noscript>
-  <p style="padding:20px;color:#ffb8dc">이 미리보기에서는 편집 기능을 실행할 수 없어요. HTML을 GitHub Pages에 올린 뒤 Safari 또는 Chrome에서 사이트 주소로 접속해주세요.</p>
+  <p style="padding:20px;color:#ffb8dc">편집 기능을 사용하려면 JavaScript를 활성화하고 Safari 또는 Chrome에서 열어주세요.</p>
 </noscript>
 
 <script>
@@ -533,6 +574,9 @@ CAM</textarea>
 const $ = id => document.getElementById(id);
 const canvas = $('canvas');
 const ctx = canvas.getContext('2d');
+const value = id => $(id).value;
+const num = id => Number(value(id));
+const checked = id => $(id).checked;
 
 const photos = [
   {img:null,z:1,x:0,y:0,flip:false},
@@ -576,14 +620,12 @@ colorDefs.forEach(([id,title,initial]) => {
     hex.value = color.value;
     draw();
   });
-
   hex.addEventListener('input',() => {
     if(/^#[0-9a-f]{6}$/i.test(hex.value)){
       color.value = hex.value;
       draw();
     }
   });
-
   hex.addEventListener('change',() => {
     hex.value = color.value;
   });
@@ -592,10 +634,6 @@ colorDefs.forEach(([id,title,initial]) => {
   row.append(label,box);
   $('colors').append(row);
 });
-
-const value = id => $(id).value;
-const num = id => Number(value(id));
-const checked = id => $(id).checked;
 
 function font(size,weight=800){
   const family = value('font') === 'serif'
@@ -628,7 +666,7 @@ function round(c,x,y,w,h,r){
 function fit(c,text,size,max,weight){
   c.font = font(size,weight);
   const width = c.measureText(text).width;
-  if(width > max){
+  if(width>max){
     size *= max/width;
     c.font = font(size,weight);
   }
@@ -642,9 +680,10 @@ function render(c){
   c.fillRect(0,0,1280,720);
 
   const pair = value('layout') === 'pair';
-  const pw = pair ? 640 : 1280;
+  const pw = pair?640:1280;
+  const count = pair?2:1;
 
-  for(let i=0;i<(pair?2:1);i++){
+  for(let i=0;i<count;i++){
     const p = photos[i];
     const x = i*pw;
 
@@ -658,7 +697,6 @@ function render(c){
         pw/p.img.naturalWidth,
         720/p.img.naturalHeight
       )*p.z;
-
       const w = p.img.naturalWidth*scale;
       const h = p.img.naturalHeight*scale;
 
@@ -671,7 +709,6 @@ function render(c){
       g.addColorStop(1,'#1a2439');
       c.fillStyle = g;
       c.fillRect(x,0,pw,720);
-
       c.strokeStyle = '#ffffff12';
       c.lineWidth = 1;
 
@@ -681,7 +718,6 @@ function render(c){
         c.lineTo(a,720);
         c.stroke();
       }
-
       for(let y=16;y<720;y+=64){
         c.beginPath();
         c.moveTo(x,y);
@@ -696,25 +732,23 @@ function render(c){
       c.font = font(20,500);
       c.fillText(
         pair?`${i+1}번째 이미지를 업로드하세요`:'이미지를 업로드하세요',
-        x+pw/2,
-        288
+        x+pw/2,288
       );
     }
-
     c.restore();
 
     const right = value('textSide') === 'right';
     const gradient = c.createLinearGradient(
-      right?x+pw:x,0,
-      right?x:x+pw,0
+      right?x+pw:x,0,right?x:x+pw,0
     );
-
     gradient.addColorStop(0,`rgba(0,0,0,${num('shade')})`);
     gradient.addColorStop(0.75,'rgba(0,0,0,0)');
     c.fillStyle = gradient;
     c.fillRect(x,0,pw,720);
+  }
 
-    textBlock(c,x,pw,i,pair);
+  for(let i=0;i<count;i++){
+    textBlock(c,i*pw,pw,i,pair);
   }
 
   if(pair){
@@ -745,7 +779,6 @@ function render(c){
     c.beginPath();
     c.rect(1120,12,126,108);
     c.clip();
-
     c.fillStyle = value('textColor');
     c.textAlign = value('badgeAlign');
     c.textBaseline = 'middle';
@@ -753,17 +786,13 @@ function render(c){
     const lines = value('badgeText').replace(/\r/g,'').split('\n');
     const lineHeight = 100/lines.length;
     let size = Math.min(73,lineHeight*0.85);
-
     const badgeFont = n =>
       (checked('badgeItalic')?'italic ':'')+font(n,900);
 
     c.font = badgeFont(size);
-
     const widest = lines.reduce(
-      (max,line) => Math.max(max,c.measureText(line).width),
-      0
+      (max,line) => Math.max(max,c.measureText(line).width),0
     );
-
     const pad = checked('badgeItalic')?10:3;
     const available = 126-2*pad;
 
@@ -772,14 +801,11 @@ function render(c){
 
     const textX = value('badgeAlign') === 'left'
       ?1120+pad
-      :value('badgeAlign') === 'right'
-        ?1246-pad
-        :1183;
+      :value('badgeAlign') === 'right'?1246-pad:1183;
 
     lines.forEach((line,i) => {
       c.fillText(line,textX,16+lineHeight*(i+0.5));
     });
-
     c.restore();
   }
 
@@ -792,7 +818,6 @@ function drawCredit(c){
   if(!text) return;
 
   const inset = 24+(checked('fullFrame')?num('barHeight'):0);
-
   c.save();
   c.textAlign = 'right';
   c.textBaseline = 'bottom';
@@ -800,7 +825,6 @@ function drawCredit(c){
   c.shadowColor = 'rgba(0,0,0,0.8)';
   c.shadowBlur = 4;
   c.shadowOffsetY = 1;
-
   fit(c,text,num('creditSize'),580,500);
   c.fillText(text,1280-inset,720-inset);
   c.restore();
@@ -816,62 +840,42 @@ function textBlock(c,x,w,i,pair){
   const name = value(i?'name2':'name');
   const group = value(i?'group2':'group');
   const label = value('labelText');
-
   const nameScale = num(i?'nameScale2':'nameScale');
   const groupScale = num(i?'groupScale2':'groupScale');
+  const labelOffsetX = num(i?'labelX2':'labelX');
+  const labelOffsetY = num(i?'labelY2':'labelY');
 
   c.save();
   c.textAlign = right?'right':'left';
   c.textBaseline = 'alphabetic';
   c.fillStyle = value('textColor');
 
-  /*
-    각 문구에 개별 크기를 적용합니다.
-    글자를 크게 키우면 위쪽 문구를 밀어 올려 겹침을 줄입니다.
-    100%에서는 기존 배치를 유지합니다.
-  */
   const nameSize = fit(c,name,112*s*nameScale,max,900);
   const nameMetrics = c.measureText(name);
   const nameAscent = Number.isFinite(nameMetrics.actualBoundingBoxAscent)
-    ? Math.max(0,nameMetrics.actualBoundingBoxAscent)
-    : nameSize*0.9;
+    ?Math.max(0,nameMetrics.actualBoundingBoxAscent):nameSize*0.9;
 
   const groupSize = fit(c,group,85*s*groupScale,max,500);
   const groupMetrics = c.measureText(group);
   const groupAscent = Number.isFinite(groupMetrics.actualBoundingBoxAscent)
-    ? Math.max(0,groupMetrics.actualBoundingBoxAscent)
-    : groupSize*0.9;
+    ?Math.max(0,groupMetrics.actualBoundingBoxAscent):groupSize*0.9;
   const groupDescent = Number.isFinite(groupMetrics.actualBoundingBoxDescent)
-    ? Math.max(0,groupMetrics.actualBoundingBoxDescent)
-    : groupSize*0.2;
+    ?Math.max(0,groupMetrics.actualBoundingBoxDescent):groupSize*0.2;
 
   let groupY = base-130*s;
-
   if(name && group){
     const belowGroup = Math.max(
-      groupDescent,
-      checked('underline')?17*s:0
+      groupDescent,checked('underline')?17*s:0
     );
-
-    groupY = Math.min(
-      groupY,
-      base-nameAscent-belowGroup-16*s
-    );
+    groupY = Math.min(groupY,base-nameAscent-belowGroup-16*s);
   }
 
   const lh = 74*s;
   let labelY = base-293*s;
-
   if(group){
-    labelY = Math.min(
-      labelY,
-      groupY-groupAscent-lh-18*s
-    );
+    labelY = Math.min(labelY,groupY-groupAscent-lh-18*s);
   }else if(name){
-    labelY = Math.min(
-      labelY,
-      base-nameAscent-lh-18*s
-    );
+    labelY = Math.min(labelY,base-nameAscent-lh-18*s);
   }
 
   if(checked('shadow')){
@@ -883,19 +887,12 @@ function textBlock(c,x,w,i,pair){
 
   c.font = font(nameSize,900);
   c.fillText(name,edge,base);
-
   c.font = font(groupSize,500);
   c.fillText(group,edge,groupY);
 
   const gw = c.measureText(group).width;
-
   if(checked('underline') && group){
-    c.fillRect(
-      right?edge-gw:edge,
-      groupY+13*s,
-      gw,
-      4*s
-    );
+    c.fillRect(right?edge-gw:edge,groupY+13*s,gw,4*s);
   }
 
   c.shadowColor = 'transparent';
@@ -906,32 +903,30 @@ function textBlock(c,x,w,i,pair){
   if(label){
     const labelSize = fit(c,label,44*s,max-48*s,900);
     const lw = c.measureText(label).width+40*s;
-    const lx = right?edge-lw-20*s:edge;
+    const lx = (right?edge-lw-20*s:edge)+labelOffsetX;
+    const ly = labelY+labelOffsetY;
 
     c.fillStyle = value('labelBg');
-    round(c,lx,labelY,lw,lh,6*s);
+    round(c,lx,ly,lw,lh,6*s);
     c.fill();
-
     poly(c,[
-      [lx+lw-2,labelY+20*s],
-      [lx+lw+20*s,labelY+8*s],
-      [lx+lw+20*s,labelY+lh-8*s],
-      [lx+lw-2,labelY+lh-20*s]
+      [lx+lw-2,ly+20*s],
+      [lx+lw+20*s,ly+8*s],
+      [lx+lw+20*s,ly+lh-8*s],
+      [lx+lw-2,ly+lh-20*s]
     ],value('labelBg'));
 
     c.fillStyle = value('labelColor');
     c.textAlign = 'center';
     c.textBaseline = 'middle';
     c.font = font(labelSize,900);
-    c.fillText(label,lx+lw/2,labelY+lh/2+s);
+    c.fillText(label,lx+lw/2,ly+lh/2+s);
   }
 
   c.restore();
 }
 
-function draw(){
-  render(ctx);
-}
+function draw(){render(ctx)}
 
 function selected(){
   return value('layout') === 'pair'?Number(value('editPhoto')):0;
@@ -948,11 +943,15 @@ function syncPhoto(){
 }
 
 function syncTextSizes(){
-  for(const id of [
-    'groupScale','nameScale',
-    'groupScale2','nameScale2','textScale'
-  ]){
+  for(const id of ['groupScale','nameScale','groupScale2','nameScale2','textScale']){
     $(id+'Out').value = Math.round(num(id)*100)+'%';
+  }
+}
+
+function syncLabelPositions(){
+  for(const id of ['labelX','labelY','labelX2','labelY2']){
+    const n = num(id);
+    $(id+'Out').value = (n>0?'+':'')+n;
   }
 }
 
@@ -964,27 +963,43 @@ for(const [id,key] of [['zoom','z'],['panX','x'],['panY','y']]){
   });
 }
 
-for(const id of [
-  'groupScale','nameScale',
-  'groupScale2','nameScale2','textScale'
-]){
+for(const id of ['groupScale','nameScale','groupScale2','nameScale2','textScale']){
   $(id).addEventListener('input',() => {
     syncTextSizes();
     draw();
   });
 }
 
-$('editPhoto').addEventListener('change',syncPhoto);
+for(const id of ['labelX','labelY','labelX2','labelY2']){
+  $(id).addEventListener('input',() => {
+    syncLabelPositions();
+    draw();
+  });
+}
 
+function resetLabelPosition(second){
+  $(second?'labelX2':'labelX').value = 0;
+  $(second?'labelY2':'labelY').value = 0;
+  syncLabelPositions();
+  draw();
+}
+$('resetLabel').onclick = () => resetLabelPosition(false);
+$('resetLabel2').onclick = () => resetLabelPosition(true);
+
+const categoryPanels = document.querySelectorAll('details.panel');
+$('expandAll').onclick = () => {
+  categoryPanels.forEach(panel => {panel.open = true});
+};
+$('collapseAll').onclick = () => {
+  categoryPanels.forEach(panel => {panel.open = false});
+};
+
+$('editPhoto').addEventListener('change',syncPhoto);
 $('layout').addEventListener('change',() => {
   const pair = value('layout') === 'pair';
-
-  for(const id of [
-    'uploadSecond','editPhotoRow','secondText','photoStatus1'
-  ]){
+  for(const id of ['uploadSecond','editPhotoRow','secondText','photoStatus1']){
     $(id).classList.toggle('hidden',!pair);
   }
-
   syncPhoto();
   draw();
 });
@@ -1014,17 +1029,12 @@ async function decodePhoto(src){
   });
 
   if(typeof im.decode === 'function'){
-    try{
-      await im.decode();
-    }catch(e){
-      if(!im.naturalWidth) throw e;
-    }
+    try{await im.decode()}
+    catch(e){if(!im.naturalWidth) throw e}
   }
-
   if(!im.naturalWidth || !im.naturalHeight){
     throw new Error('사진의 크기를 읽지 못했어요.');
   }
-
   return im;
 }
 
@@ -1036,16 +1046,13 @@ for(let i=0;i<2;i++){
 
     const token = ++loadTokens[i];
     const message = $('photoStatus'+i);
-
     message.textContent = '사진을 읽는 중…';
     $('status').textContent = '이미지를 불러오는 중이에요…';
 
     let im;
-
     try{
       const src = await readImageData(f);
       if(token!==loadTokens[i]) return;
-
       im = await decodePhoto(src);
       if(token!==loadTokens[i]) return;
     }catch(err){
@@ -1067,12 +1074,11 @@ for(let i=0;i<2;i++){
         `불러옴 · ${f.name} · ${im.naturalWidth} × ${im.naturalHeight}`;
       $('status').textContent =
         '사진을 불러왔어요. 미리보기에서 드래그해 위치를 맞춰주세요.';
-      requestAnimationFrame(() => draw());
+      requestAnimationFrame(draw);
     }catch(err){
       message.textContent = '사진은 읽었지만 미리보기를 그리지 못했어요.';
       $('status').textContent = message.textContent+' '+err.message;
     }
-
     input.value = '';
   });
 }
@@ -1082,12 +1088,10 @@ $('resetPhoto').onclick = () => {
   syncPhoto();
   draw();
 };
-
 $('flip').onclick = () => {
   photos[selected()].flip = !photos[selected()].flip;
   draw();
 };
-
 $('removePhoto').onclick = () => {
   const i = selected();
   loadTokens[i]++;
@@ -1100,8 +1104,8 @@ $('removePhoto').onclick = () => {
 for(const id of [
   'labelText','group','name','group2','name2','textSide',
   'textY','font','underline','shadow','barHeight','fullFrame',
-  'showBadge','badgeText','badgeAlign','badgeItalic','creditText',
-  'creditSize','creditColor','shade'
+  'showBadge','badgeText','badgeAlign','badgeItalic',
+  'creditText','creditSize','creditColor','shade'
 ]){
   $(id).addEventListener('input',draw);
 }
@@ -1113,7 +1117,6 @@ const presets = {
   mint:['#218573','#9ce4ba','#196f60'],
   mono:['#26232e','#aaa3b1','#26232e']
 };
-
 document.querySelectorAll('[data-preset]').forEach(button => {
   button.onclick = () => {
     ['frame','accent','labelColor'].forEach((id,i) => {
@@ -1125,49 +1128,34 @@ document.querySelectorAll('[data-preset]').forEach(button => {
 });
 
 let drag = null;
-
 canvas.addEventListener('pointerdown',e => {
   const r = canvas.getBoundingClientRect();
   const pair = value('layout') === 'pair';
   const i = pair && e.clientX-r.left>=r.width/2?1:0;
-
   $('editPhoto').value = String(i);
   syncPhoto();
-
   drag = {
-    id:e.pointerId,
-    i,
-    x:e.clientX,
-    y:e.clientY,
-    px:photos[i].x,
-    py:photos[i].y,
-    w:r.width/(pair?2:1),
-    h:r.height
+    id:e.pointerId,i,
+    x:e.clientX,y:e.clientY,
+    px:photos[i].x,py:photos[i].y,
+    w:r.width/(pair?2:1),h:r.height
   };
-
   canvas.setPointerCapture(e.pointerId);
 });
-
 canvas.addEventListener('pointermove',e => {
   if(!drag || e.pointerId!==drag.id) return;
-
   const p = photos[drag.i];
-
   p.x = Math.max(-100,Math.min(
     100,drag.px+(e.clientX-drag.x)/drag.w*100
   ));
   p.y = Math.max(-100,Math.min(
     100,drag.py+(e.clientY-drag.y)/drag.h*100
   ));
-
   syncPhoto();
   draw();
 });
-
 for(const event of ['pointerup','pointercancel','lostpointercapture']){
-  canvas.addEventListener(event,() => {
-    drag = null;
-  });
+  canvas.addEventListener(event,() => {drag = null});
 }
 
 let exportURL = null;
@@ -1177,7 +1165,6 @@ let busy = false;
 
 async function exportImage(open){
   if(busy) return;
-
   busy = true;
   $('save').disabled = true;
   $('openImage').disabled = true;
@@ -1185,7 +1172,6 @@ async function exportImage(open){
   try{
     const out = document.createElement('canvas');
     const scale = num('resolution');
-
     out.width = 1280*scale;
     out.height = 720*scale;
 
@@ -1201,7 +1187,6 @@ async function exportImage(open){
     });
 
     if(exportURL) URL.revokeObjectURL(exportURL);
-
     exportBlob = blob;
     exportURL = URL.createObjectURL(blob);
     exportName = (value('name').trim() || 'fancam')
@@ -1241,7 +1226,6 @@ $('closeDialog').onclick = () => $('resultDialog').close();
 
 $('shareImage').onclick = async () => {
   if(!exportBlob) return;
-
   const file = new File([exportBlob],exportName,{type:'image/png'});
 
   if(navigator.canShare && navigator.canShare({files:[file]})){
@@ -1261,6 +1245,7 @@ $('shareImage').onclick = async () => {
 
 syncPhoto();
 syncTextSizes();
+syncLabelPositions();
 draw();
 </script>
 </body>
