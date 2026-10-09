@@ -65,9 +65,6 @@ main{
   margin:auto;
   padding:0 28px 40px;
 }
-
-/* 미리보기와 편집창만 같은 영역에 배치합니다.
-   저장 영역은 이 바깥에 있어 sticky 미리보기와 겹치지 않습니다. */
 .editor-grid{
   display:grid;
   grid-template-columns:minmax(0,1fr) 340px;
@@ -76,10 +73,7 @@ main{
   position:relative;
 }
 .editor-grid>*{min-width:0}
-.preview{
-  position:sticky;
-  top:22px;
-}
+.preview{position:sticky;top:22px}
 .stage{
   padding:18px;
   background:#211c26a8;
@@ -228,8 +222,8 @@ input[type=checkbox]{accent-color:var(--accent)}
   background:var(--sw)!important;
 }
 .check{display:flex;align-items:center;gap:7px;margin:10px 0;font-size:12px}
-.control-label{display:flex;justify-content:space-between}
-.control-label output{color:#e5b1d0}
+.control-label{display:flex;justify-content:space-between;gap:10px}
+.control-label output{color:#e5b1d0;white-space:nowrap}
 .hidden{display:none!important}
 dialog{
   width:min(850px,94vw);
@@ -262,7 +256,6 @@ dialog h2{font-size:17px}
 }
 .usage-notice p[lang=en]{font-size:12px;color:#bcb0c1}
 .usage-notice strong{color:#f7c5df}
-
 @media(max-width:1000px){
   main{padding:0 18px 30px}
   .editor-grid{
@@ -377,16 +370,42 @@ dialog h2{font-size:17px}
         <label for="group">그룹 / 페어명</label>
         <input id="group" type="text" value="YOUR FAVORITE" maxlength="50">
 
+        <label class="control-label" for="groupScale">
+          그룹 / 페어명 글자 크기
+          <output id="groupScaleOut" for="groupScale">100%</output>
+        </label>
+        <input id="groupScale" type="range" min="0.2" max="2" step="0.01" value="1">
+
         <label for="name">이름 / 메인 문구</label>
         <input id="name" type="text" value="최애 이름" maxlength="40">
+
+        <label class="control-label" for="nameScale">
+          이름 / 메인 문구 글자 크기
+          <output id="nameScaleOut" for="nameScale">100%</output>
+        </label>
+        <input id="nameScale" type="range" min="0.2" max="2" step="0.01" value="1">
 
         <div id="secondText" class="hidden">
           <label for="group2">오른쪽 그룹 / 페어명</label>
           <input id="group2" type="text" value="MY ONE &amp; ONLY" maxlength="50">
 
+          <label class="control-label" for="groupScale2">
+            오른쪽 그룹 / 페어명 글자 크기
+            <output id="groupScale2Out" for="groupScale2">100%</output>
+          </label>
+          <input id="groupScale2" type="range" min="0.2" max="2" step="0.01" value="1">
+
           <label for="name2">오른쪽 이름</label>
           <input id="name2" type="text" value="너의 이름" maxlength="40">
+
+          <label class="control-label" for="nameScale2">
+            오른쪽 이름 글자 크기
+            <output id="nameScale2Out" for="nameScale2">100%</output>
+          </label>
+          <input id="nameScale2" type="range" min="0.2" max="2" step="0.01" value="1">
         </div>
+
+        <p class="small">그룹명과 이름 크기를 각각 조절할 수 있어요. 긴 문구는 사진 영역 너비에 맞게 자동으로 줄어듭니다.</p>
 
         <label for="textSide">문구 배치</label>
         <select id="textSide">
@@ -394,7 +413,10 @@ dialog h2{font-size:17px}
           <option value="right">오른쪽 아래 / 페어형은 각 사진 오른쪽</option>
         </select>
 
-        <label for="textScale">문구 전체 크기</label>
+        <label class="control-label" for="textScale">
+          문구 전체 크기
+          <output id="textScaleOut" for="textScale">100%</output>
+        </label>
         <input id="textScale" type="range" min="0.55" max="1.2" step="0.01" value="1">
 
         <label for="textY">문구 높이</label>
@@ -464,7 +486,6 @@ CAM</textarea>
     </aside>
   </div>
 
-  <!-- sticky 미리보기 영역 바깥에 배치 -->
   <section class="save-section" aria-label="완성 이미지 저장">
     <div class="usage-notice" aria-labelledby="usageNoticeTitle">
       <h2 id="usageNoticeTitle">이용 시 주의사항 <span lang="en">PLEASE READ</span></h2>
@@ -493,10 +514,8 @@ CAM</textarea>
     <h2>완성된 썸네일</h2>
     <button id="closeDialog" aria-label="닫기">닫기</button>
   </div>
-
   <p class="small">아이폰: 이미지를 길게 눌러 ‘사진에 저장’을 선택하거나 아래 공유 버튼을 사용하세요.</p>
   <img id="resultImage" alt="완성된 입덕직캠 썸네일">
-
   <div class="row">
     <a id="downloadLink" download="fancam.png">PNG 파일 다운로드</a>
     <button id="shareImage">이미지 공유 / 저장</button>
@@ -548,10 +567,10 @@ colorDefs.forEach(([id,title,initial]) => {
   const hex = document.createElement('input');
   hex.type = 'text';
   hex.className = 'hex';
-  hex.id = id + 'Hex';
+  hex.id = id+'Hex';
   hex.value = initial;
   hex.maxLength = 7;
-  hex.setAttribute('aria-label',title + ' HEX 코드');
+  hex.setAttribute('aria-label',title+' HEX 코드');
 
   color.addEventListener('input',() => {
     hex.value = color.value;
@@ -610,7 +629,7 @@ function fit(c,text,size,max,weight){
   c.font = font(size,weight);
   const width = c.measureText(text).width;
   if(width > max){
-    size *= max / width;
+    size *= max/width;
     c.font = font(size,weight);
   }
   return size;
@@ -793,13 +812,67 @@ function textBlock(c,x,w,i,pair){
   const max = w-80;
   const edge = right?x+w-40:x+40;
   const base = 670-num('textY');
+
   const name = value(i?'name2':'name');
   const group = value(i?'group2':'group');
   const label = value('labelText');
 
+  const nameScale = num(i?'nameScale2':'nameScale');
+  const groupScale = num(i?'groupScale2':'groupScale');
+
   c.save();
   c.textAlign = right?'right':'left';
+  c.textBaseline = 'alphabetic';
   c.fillStyle = value('textColor');
+
+  /*
+    각 문구에 개별 크기를 적용합니다.
+    글자를 크게 키우면 위쪽 문구를 밀어 올려 겹침을 줄입니다.
+    100%에서는 기존 배치를 유지합니다.
+  */
+  const nameSize = fit(c,name,112*s*nameScale,max,900);
+  const nameMetrics = c.measureText(name);
+  const nameAscent = Number.isFinite(nameMetrics.actualBoundingBoxAscent)
+    ? Math.max(0,nameMetrics.actualBoundingBoxAscent)
+    : nameSize*0.9;
+
+  const groupSize = fit(c,group,85*s*groupScale,max,500);
+  const groupMetrics = c.measureText(group);
+  const groupAscent = Number.isFinite(groupMetrics.actualBoundingBoxAscent)
+    ? Math.max(0,groupMetrics.actualBoundingBoxAscent)
+    : groupSize*0.9;
+  const groupDescent = Number.isFinite(groupMetrics.actualBoundingBoxDescent)
+    ? Math.max(0,groupMetrics.actualBoundingBoxDescent)
+    : groupSize*0.2;
+
+  let groupY = base-130*s;
+
+  if(name && group){
+    const belowGroup = Math.max(
+      groupDescent,
+      checked('underline')?17*s:0
+    );
+
+    groupY = Math.min(
+      groupY,
+      base-nameAscent-belowGroup-16*s
+    );
+  }
+
+  const lh = 74*s;
+  let labelY = base-293*s;
+
+  if(group){
+    labelY = Math.min(
+      labelY,
+      groupY-groupAscent-lh-18*s
+    );
+  }else if(name){
+    labelY = Math.min(
+      labelY,
+      base-nameAscent-lh-18*s
+    );
+  }
 
   if(checked('shadow')){
     c.shadowColor = '#000a';
@@ -808,16 +881,21 @@ function textBlock(c,x,w,i,pair){
     c.shadowOffsetY = 4;
   }
 
-  fit(c,name,112*s,max,900);
+  c.font = font(nameSize,900);
   c.fillText(name,edge,base);
 
-  fit(c,group,85*s,max,500);
-  c.fillText(group,edge,base-130*s);
+  c.font = font(groupSize,500);
+  c.fillText(group,edge,groupY);
 
   const gw = c.measureText(group).width;
 
-  if(checked('underline')&&group){
-    c.fillRect(right?edge-gw:edge,base-117*s,gw,4*s);
+  if(checked('underline') && group){
+    c.fillRect(
+      right?edge-gw:edge,
+      groupY+13*s,
+      gw,
+      4*s
+    );
   }
 
   c.shadowColor = 'transparent';
@@ -828,26 +906,24 @@ function textBlock(c,x,w,i,pair){
   if(label){
     const labelSize = fit(c,label,44*s,max-48*s,900);
     const lw = c.measureText(label).width+40*s;
-    const lh = 74*s;
-    const ly = base-293*s;
     const lx = right?edge-lw-20*s:edge;
 
     c.fillStyle = value('labelBg');
-    round(c,lx,ly,lw,lh,6*s);
+    round(c,lx,labelY,lw,lh,6*s);
     c.fill();
 
     poly(c,[
-      [lx+lw-2,ly+20*s],
-      [lx+lw+20*s,ly+8*s],
-      [lx+lw+20*s,ly+lh-8*s],
-      [lx+lw-2,ly+lh-20*s]
+      [lx+lw-2,labelY+20*s],
+      [lx+lw+20*s,labelY+8*s],
+      [lx+lw+20*s,labelY+lh-8*s],
+      [lx+lw-2,labelY+lh-20*s]
     ],value('labelBg'));
 
     c.fillStyle = value('labelColor');
     c.textAlign = 'center';
     c.textBaseline = 'middle';
     c.font = font(labelSize,900);
-    c.fillText(label,lx+lw/2,ly+lh/2+s);
+    c.fillText(label,lx+lw/2,labelY+lh/2+s);
   }
 
   c.restore();
@@ -871,10 +947,29 @@ function syncPhoto(){
   $('panYOut').value = Math.round(p.y);
 }
 
+function syncTextSizes(){
+  for(const id of [
+    'groupScale','nameScale',
+    'groupScale2','nameScale2','textScale'
+  ]){
+    $(id+'Out').value = Math.round(num(id)*100)+'%';
+  }
+}
+
 for(const [id,key] of [['zoom','z'],['panX','x'],['panY','y']]){
   $(id).addEventListener('input',() => {
     photos[selected()][key] = num(id);
     syncPhoto();
+    draw();
+  });
+}
+
+for(const id of [
+  'groupScale','nameScale',
+  'groupScale2','nameScale2','textScale'
+]){
+  $(id).addEventListener('input',() => {
+    syncTextSizes();
     draw();
   });
 }
@@ -884,7 +979,9 @@ $('editPhoto').addEventListener('change',syncPhoto);
 $('layout').addEventListener('change',() => {
   const pair = value('layout') === 'pair';
 
-  for(const id of ['uploadSecond','editPhotoRow','secondText','photoStatus1']){
+  for(const id of [
+    'uploadSecond','editPhotoRow','secondText','photoStatus1'
+  ]){
     $(id).classList.toggle('hidden',!pair);
   }
 
@@ -924,7 +1021,7 @@ async function decodePhoto(src){
     }
   }
 
-  if(!im.naturalWidth||!im.naturalHeight){
+  if(!im.naturalWidth || !im.naturalHeight){
     throw new Error('사진의 크기를 읽지 못했어요.');
   }
 
@@ -934,7 +1031,7 @@ async function decodePhoto(src){
 for(let i=0;i<2;i++){
   $('file'+i).addEventListener('change',async e => {
     const input = e.target;
-    const f = input.files&&input.files[0];
+    const f = input.files && input.files[0];
     if(!f) return;
 
     const token = ++loadTokens[i];
@@ -953,7 +1050,7 @@ for(let i=0;i<2;i++){
       if(token!==loadTokens[i]) return;
     }catch(err){
       if(token===loadTokens[i]){
-        message.textContent = err.message||'사진을 읽지 못했어요.';
+        message.textContent = err.message || '사진을 읽지 못했어요.';
         $('status').textContent = message.textContent;
       }
       input.value = '';
@@ -1001,7 +1098,7 @@ $('removePhoto').onclick = () => {
 };
 
 for(const id of [
-  'labelText','group','name','group2','name2','textSide','textScale',
+  'labelText','group','name','group2','name2','textSide',
   'textY','font','underline','shadow','barHeight','fullFrame',
   'showBadge','badgeText','badgeAlign','badgeItalic','creditText',
   'creditSize','creditColor','shade'
@@ -1032,7 +1129,7 @@ let drag = null;
 canvas.addEventListener('pointerdown',e => {
   const r = canvas.getBoundingClientRect();
   const pair = value('layout') === 'pair';
-  const i = pair&&e.clientX-r.left>=r.width/2?1:0;
+  const i = pair && e.clientX-r.left>=r.width/2?1:0;
 
   $('editPhoto').value = String(i);
   syncPhoto();
@@ -1052,7 +1149,7 @@ canvas.addEventListener('pointerdown',e => {
 });
 
 canvas.addEventListener('pointermove',e => {
-  if(!drag||e.pointerId!==drag.id) return;
+  if(!drag || e.pointerId!==drag.id) return;
 
   const p = photos[drag.i];
 
@@ -1107,7 +1204,7 @@ async function exportImage(open){
 
     exportBlob = blob;
     exportURL = URL.createObjectURL(blob);
-    exportName = (value('name').trim()||'fancam')
+    exportName = (value('name').trim() || 'fancam')
       .replace(/[\\/:*?"<>|]/g,'_')+'_입덕직캠.png';
 
     $('resultImage').src = exportURL;
@@ -1147,7 +1244,7 @@ $('shareImage').onclick = async () => {
 
   const file = new File([exportBlob],exportName,{type:'image/png'});
 
-  if(navigator.canShare&&navigator.canShare({files:[file]})){
+  if(navigator.canShare && navigator.canShare({files:[file]})){
     try{
       await navigator.share({files:[file]});
     }catch(e){
@@ -1163,6 +1260,7 @@ $('shareImage').onclick = async () => {
 };
 
 syncPhoto();
+syncTextSizes();
 draw();
 </script>
 </body>
